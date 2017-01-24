@@ -1,9 +1,9 @@
 //
 //  MaterialTapTargetPrompt.swift
-//  SDQ
+//  MaterialTapTargetPrompt
 //
-//  Created by abedalkareem omreyh on 1/22/17.
-//  Copyright © 2017 DevBatch. All rights reserved.
+//  Created by abedalkareem omreyh on 1/24/17.
+//  Copyright © 2017 abedalkareem omreyh. All rights reserved.
 //
 
 import UIKit
