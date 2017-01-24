@@ -13,6 +13,7 @@
 		C666633A1E37294F0091E32F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C66663391E37294F0091E32F /* Assets.xcassets */; };
 		C666633D1E37294F0091E32F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C666633B1E37294F0091E32F /* LaunchScreen.storyboard */; };
 		C66663451E3729BF0091E32F /* MaterialTapTargetPrompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66663441E3729BF0091E32F /* MaterialTapTargetPrompt.swift */; };
+		C6AC85801E37781000AB6960 /* screenshot.png in Resources */ = {isa = PBXBuildFile; fileRef = C6AC857F1E37781000AB6960 /* screenshot.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		C666633C1E37294F0091E32F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C666633E1E37294F0091E32F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C66663441E3729BF0091E32F /* MaterialTapTargetPrompt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MaterialTapTargetPrompt.swift; sourceTree = "<group>"; };
+		C6AC857F1E37781000AB6960 /* screenshot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = screenshot.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +65,7 @@
 				C66663391E37294F0091E32F /* Assets.xcassets */,
 				C666633B1E37294F0091E32F /* LaunchScreen.storyboard */,
 				C666633E1E37294F0091E32F /* Info.plist */,
+				C6AC857F1E37781000AB6960 /* screenshot.png */,
 			);
 			path = MaterialTapTargetPrompt;
 			sourceTree = "<group>";
@@ -130,6 +133,7 @@
 				C666633D1E37294F0091E32F /* LaunchScreen.storyboard in Resources */,
 				C666633A1E37294F0091E32F /* Assets.xcassets in Resources */,
 				C66663381E37294F0091E32F /* Main.storyboard in Resources */,
+				C6AC85801E37781000AB6960 /* screenshot.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -267,6 +271,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = P86FRML4RH;
 				INFOPLIST_FILE = MaterialTapTargetPrompt/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.jostudio.MaterialTapTargetPrompt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -280,6 +285,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = P86FRML4RH;
 				INFOPLIST_FILE = MaterialTapTargetPrompt/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.jostudio.MaterialTapTargetPrompt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -306,6 +312,7 @@
 				C66663431E37294F0091E32F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -10,10 +10,12 @@ import UIKit
 
 class MaterialTapTargetPrompt: UIView {
 
-    var targetView:UIView!
-    let sizeOfView:CGFloat!
-    let coloredCircleLayer = CAShapeLayer()
-    let blurWhiteCircleLayer = CAShapeLayer()
+    fileprivate var targetView:UIView!
+    fileprivate let sizeOfView:CGFloat!
+    fileprivate let coloredCircleLayer = CAShapeLayer()
+    fileprivate let blurWhiteCircleLayer = CAShapeLayer()
+    fileprivate var dummyView:UIView? = nil
+    
     var lblPrimaryText:UILabel!
     var lblSecondaryText:UILabel!
     let spaceBetweenLabel:CGFloat = 10.0
@@ -70,10 +72,10 @@ class MaterialTapTargetPrompt: UIView {
         addText()
         
         // dummy view used to hide the MaterialTapTargetPrompt view when you touch out of the view
-        dummyView()
+        addDummyView()
     }
     
-    func getTargetView(object: NSObject) -> UIView?{
+    fileprivate func getTargetView(object: NSObject) -> UIView?{
         if let barButtonItem = object as? UIBarButtonItem {
             return (barButtonItem.value(forKey: "view") as! UIView)
         }else if let view = object as? UIView {
@@ -87,18 +89,18 @@ class MaterialTapTargetPrompt: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func dummyView(){
-        let dummyView = UIView(frame: CGRect(x: 0, y: 0, width: controller.view.frame.size.width, height: controller.view.frame.size.height))
-        dummyView.backgroundColor = UIColor.clear
-        dummyView.isUserInteractionEnabled = true
+    fileprivate func addDummyView(){
+        dummyView = UIView(frame: CGRect(x: 0, y: 0, width: controller.view.frame.size.width, height: controller.view.frame.size.height))
+        dummyView?.backgroundColor = UIColor.clear
+        dummyView?.isUserInteractionEnabled = true
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismiss))
-        dummyView.addGestureRecognizer(tapGesture)
-        controller.view.addSubview(dummyView)
+        dummyView?.addGestureRecognizer(tapGesture)
+        controller.view.addSubview(dummyView!)
         controller.view.bringSubview(toFront: self)
     }
 
     
-    func addText(){
+    fileprivate func addText(){
         var xPostion = self.frame.width/1.9 // right
         if textPostion == .left{
             xPostion = self.frame.width/4
@@ -122,29 +124,46 @@ class MaterialTapTargetPrompt: UIView {
     }
 
     
-    func drawColoredCircle(){
-        let radius = targetView.frame.size.width + 10
-        let centerOfView = self.bounds.size.width / 2 - radius
-        let circlePath = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: self.bounds.size.width, height: self.bounds.size.width), cornerRadius: self.bounds.size.width)
-        let clearPath = UIBezierPath(roundedRect: CGRect(x:centerOfView, y: centerOfView, width: 2 * radius, height: 2 * radius), cornerRadius: radius)
-        circlePath.append(clearPath)
-        circlePath.usesEvenOddFillRule = true
+    fileprivate func drawColoredCircle(){
         
-        coloredCircleLayer.path = circlePath.cgPath
+        coloredCircleLayer.path = shrinkedBlurWhiteCirclePath().cgPath
         coloredCircleLayer.fillRule = kCAFillRuleEvenOdd
         coloredCircleLayer.fillColor = circleColor.cgColor
         coloredCircleLayer.opacity = 0.8
 
         self.layer.addSublayer(coloredCircleLayer)
         
-        playFocusAnimation()
+        playExpandAnimation()
+        self.playFocusAnimation()
+
     }
     
-    func playFocusAnimation(){
+    fileprivate func playExpandAnimation(){
+        CATransaction.begin()
+        CATransaction.setCompletionBlock({
+            self.coloredCircleLayer.path = self.coloredCircleLayerPath().cgPath
+            self.playFocusAnimation()
+        })
+        let animation = CABasicAnimation(keyPath: "path")
+        animation.duration = 0.8
+        animation.toValue =  coloredCircleLayerPath().cgPath
+        animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
+        // if you remove it the shape will return to the original shape after the animation finished
+        animation.fillMode = kCAFillRuleEvenOdd
+        animation.isRemovedOnCompletion = false
+        
+        coloredCircleLayer.add(animation, forKey: nil)
+        CATransaction.commit()
+    }
+    
+
+    
+    
+    fileprivate func playFocusAnimation(){
         let radius = targetView.frame.size.width
-        let centerOfView = self.bounds.size.width / 2 - radius + 5
+        let centerOfView = self.bounds.size.width / 2 - radius/2
         let path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: self.bounds.size.width, height: self.bounds.size.width), cornerRadius: self.bounds.size.width)
-        let circlePath = UIBezierPath(roundedRect: CGRect(x:centerOfView, y: centerOfView, width: 2 * radius - 10, height: 2 * radius - 10), cornerRadius: radius)
+        let circlePath = UIBezierPath(roundedRect: CGRect(x:centerOfView, y: centerOfView, width: radius, height:  radius), cornerRadius: radius)
         path.append(circlePath)
         path.usesEvenOddFillRule = true
         
@@ -157,23 +176,17 @@ class MaterialTapTargetPrompt: UIView {
         // if you remove it the shape will return to the original shape after the animation finished
         animation.fillMode = kCAFillRuleEvenOdd
         animation.isRemovedOnCompletion = false
+
         coloredCircleLayer.add(animation, forKey: nil)
         
     }
     
-    func drawBlurWhiteCircle(){
-        let radius = targetView.frame.size.width * 2 - 10
-        let superViewWidth = self.bounds.size.width/10
-        let centerOfView = (self.bounds.size.width/2)-(radius/2)
-        let path = UIBezierPath(roundedRect: CGRect(x: (self.bounds.size.width/2)-(superViewWidth/2), y: (self.bounds.size.width/2)-(superViewWidth/2), width: superViewWidth, height: superViewWidth), cornerRadius: superViewWidth)
-        let circlePath = UIBezierPath(roundedRect: CGRect(x:centerOfView, y: centerOfView, width: radius, height: radius), cornerRadius: radius)
-        path.append(circlePath)
-        path.usesEvenOddFillRule = true
+    fileprivate func drawBlurWhiteCircle(){
         
-        blurWhiteCircleLayer.path = path.cgPath
+        blurWhiteCircleLayer.path = shrinkedBlurWhiteCirclePath().cgPath
         blurWhiteCircleLayer.fillRule = kCAFillRuleEvenOdd
         blurWhiteCircleLayer.fillColor = UIColor.white.cgColor
-        blurWhiteCircleLayer.opacity = 0.5
+        blurWhiteCircleLayer.opacity = 0.0
 
         self.layer.addSublayer(blurWhiteCircleLayer)
         
@@ -189,19 +202,12 @@ class MaterialTapTargetPrompt: UIView {
         playAnimationForWhiteCircle()
     }
     
-    func playAnimationForWhiteCircle(){
-        let radius = targetView.frame.size.width + 10
-        let superViewWidth = self.bounds.size.width/4
-        let centerOfView = self.bounds.size.width / 2 - radius
-        let path = UIBezierPath(roundedRect: CGRect(x: (self.bounds.size.width/2)-(superViewWidth/2), y: (self.bounds.size.width/2)-(superViewWidth/2), width: superViewWidth, height: superViewWidth), cornerRadius: superViewWidth)
-        let circlePath = UIBezierPath(roundedRect: CGRect(x:centerOfView, y: centerOfView, width: 2 * radius, height: 2 * radius), cornerRadius: radius)
-        path.append(circlePath)
-        path.usesEvenOddFillRule = true
+    fileprivate func playAnimationForWhiteCircle(){
         
         let animation = CABasicAnimation(keyPath: "path")
         animation.duration = 1.55
         animation.beginTime = CACurrentMediaTime() + 0.8
-        animation.toValue =  path.cgPath
+        animation.toValue =  expandedBlurWhiteCirclePath().cgPath
         animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
         animation.repeatCount = HUGE
         // if you remove it the shape will return to the original shape after the animation finished
@@ -218,13 +224,52 @@ class MaterialTapTargetPrompt: UIView {
         blurWhiteCircleLayer.add(opacityanimation, forKey: nil)
         
     }
+    
+    
+    // size of circles
+    
+    fileprivate func shrinkedBlurWhiteCirclePath() -> UIBezierPath{
+        let radius = targetView.frame.size.width + 10
+        let superViewWidth = targetView.frame.size.width + 11
+        let centerOfView = self.bounds.size.width / 2 - (radius/2)
+        let path = UIBezierPath(roundedRect: CGRect(x: (self.bounds.size.width/2)-(superViewWidth/2), y: (self.bounds.size.width/2)-(superViewWidth/2), width: superViewWidth, height: superViewWidth), cornerRadius: superViewWidth)
+        let circlePath = UIBezierPath(roundedRect: CGRect(x:centerOfView, y: centerOfView, width: radius, height: radius), cornerRadius: radius)
+        path.append(circlePath)
+        path.usesEvenOddFillRule = true
+        return path
+    }
+    
+    fileprivate func expandedBlurWhiteCirclePath() -> UIBezierPath{
+        let radius = targetView.frame.size.width + 15
+        let superViewWidth = self.bounds.size.width/4
+        let centerOfView = self.bounds.size.width / 2 - (radius/2)
+        let path = UIBezierPath(roundedRect: CGRect(x: (self.bounds.size.width/2)-(superViewWidth/2), y: (self.bounds.size.width/2)-(superViewWidth/2), width: superViewWidth, height: superViewWidth), cornerRadius: superViewWidth)
+        let circlePath = UIBezierPath(roundedRect: CGRect(x:centerOfView, y: centerOfView, width: radius, height: radius), cornerRadius: radius)
+        path.append(circlePath)
+        path.usesEvenOddFillRule = true
+        return path
+    }
 
     
+    fileprivate func coloredCircleLayerPath() -> UIBezierPath{
+        let radius = targetView.frame.size.width + 10
+        let centerOfView = self.bounds.size.width / 2 - radius
+        let circlePath = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: self.bounds.size.width, height: self.bounds.size.width), cornerRadius: self.bounds.size.width)
+        let clearPath = UIBezierPath(roundedRect: CGRect(x:centerOfView, y: centerOfView, width: 2 * radius, height: 2 * radius), cornerRadius: radius)
+        circlePath.append(clearPath)
+        circlePath.usesEvenOddFillRule = true
+        return circlePath
+    }
+    
+    //
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.dismiss()
         action()
     }
     
     func dismiss(){
+        dummyView?.removeFromSuperview()
         self.removeFromSuperview()
     }
 
