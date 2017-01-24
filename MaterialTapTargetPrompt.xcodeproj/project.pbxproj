@@ -12,6 +12,7 @@
 		C66663381E37294F0091E32F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C66663361E37294F0091E32F /* Main.storyboard */; };
 		C666633A1E37294F0091E32F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C66663391E37294F0091E32F /* Assets.xcassets */; };
 		C666633D1E37294F0091E32F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C666633B1E37294F0091E32F /* LaunchScreen.storyboard */; };
+		C66663451E3729BF0091E32F /* MaterialTapTargetPrompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66663441E3729BF0091E32F /* MaterialTapTargetPrompt.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		C66663391E37294F0091E32F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C666633C1E37294F0091E32F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C666633E1E37294F0091E32F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C66663441E3729BF0091E32F /* MaterialTapTargetPrompt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MaterialTapTargetPrompt.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +58,7 @@
 			children = (
 				C66663321E37294F0091E32F /* AppDelegate.swift */,
 				C66663341E37294F0091E32F /* ViewController.swift */,
+				C66663441E3729BF0091E32F /* MaterialTapTargetPrompt.swift */,
 				C66663361E37294F0091E32F /* Main.storyboard */,
 				C66663391E37294F0091E32F /* Assets.xcassets */,
 				C666633B1E37294F0091E32F /* LaunchScreen.storyboard */,
@@ -138,6 +141,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C66663351E37294F0091E32F /* ViewController.swift in Sources */,
+				C66663451E3729BF0091E32F /* MaterialTapTargetPrompt.swift in Sources */,
 				C66663331E37294F0091E32F /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
