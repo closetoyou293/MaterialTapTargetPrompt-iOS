@@ -12,20 +12,11 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var rightBarButton: UIBarButtonItem!
     @IBOutlet weak var leftBarButton: UIBarButtonItem!
-    @IBOutlet weak var centerButton: UIButton!
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let tapTargetPrompt = MaterialTapTargetPrompt(controller: self, target: centerButton)
-        tapTargetPrompt.action = {
-            print("left clicked")
-        }
-        tapTargetPrompt.circleColor = #colorLiteral(red: 0.1568627451, green: 0.6588235294, blue: 0.8901960784, alpha: 1)
-        tapTargetPrompt.primaryText = "Add Home"
-        tapTargetPrompt.secondaryText = "Here you can add home"
-        tapTargetPrompt.textPostion = .cenertTop
         
     }
     

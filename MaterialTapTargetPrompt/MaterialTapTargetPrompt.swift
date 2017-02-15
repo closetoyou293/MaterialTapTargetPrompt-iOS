@@ -44,8 +44,8 @@ class MaterialTapTargetPrompt: UIView {
     
     var textPostion:TextPostion = .bottomRight{
         willSet{
-            var xPostion = self.frame.width/1.9 // right
-            var yPostion = self.frame.width/1.6 // right
+            var xPostion:CGFloat = 0.0
+            var yPostion:CGFloat = 0.0
 
             // set y and x postion
             switch newValue {
@@ -127,8 +127,6 @@ class MaterialTapTargetPrompt: UIView {
     }
 
 
-
-    
     fileprivate func addText(){
         var xPostion = self.frame.width/1.9 // right
         if textPostion == .bottomLeft{
@@ -150,6 +148,18 @@ class MaterialTapTargetPrompt: UIView {
         lblSecondaryText.font = UIFont.systemFont(ofSize: 18)
         lblSecondaryText.sizeToFit()
         self.addSubview(lblSecondaryText)
+        
+        // hide labels
+        lblPrimaryText.alpha = 0
+        lblSecondaryText.alpha = 0
+
+    }
+    
+    fileprivate func showLabels(){
+        UIView.animate(withDuration: 0.5) {
+            self.lblPrimaryText.alpha = 1
+            self.lblSecondaryText.alpha = 1
+        }
     }
 
     // MARK: Draw circles
@@ -200,6 +210,7 @@ class MaterialTapTargetPrompt: UIView {
         CATransaction.setCompletionBlock({
             self.coloredCircleLayer.path = self.coloredCircleLayerPath().cgPath
             self.playFocusAnimation()
+            self.showLabels()
         })
         let animation = CABasicAnimation(keyPath: "path")
         animation.duration = 0.8
