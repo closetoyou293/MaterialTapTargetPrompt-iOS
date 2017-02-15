@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="FJT-0N-iCh">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="FJT-0N-iCh">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -55,8 +55,16 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.090196078430000007" green="0.37647058820000001" blue="0.50196078430000002" alpha="1" colorSpace="custom" customColorSpace="adobeRGB1998"/>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="h4O-OG-AQD">
+                                <rect key="frame" x="164.5" y="318" width="47" height="30"/>
+                                <state key="normal" title="Center"/>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="h4O-OG-AQD" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="10A-GL-5WN"/>
+                            <constraint firstItem="h4O-OG-AQD" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="UKF-xX-4gJ"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="yeT-dQ-mz5">
                         <barButtonItem key="leftBarButtonItem" image="joinico" id="9iu-9L-JWq">
@@ -67,6 +75,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="centerButton" destination="h4O-OG-AQD" id="hEf-Aj-49J"/>
                         <outlet property="leftBarButton" destination="9iu-9L-JWq" id="X8u-FR-ala"/>
                         <outlet property="rightBarButton" destination="dPN-gf-F7q" id="iuC-FI-dTN"/>
                     </connections>

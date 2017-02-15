@@ -42,14 +42,41 @@ class MaterialTapTargetPrompt: UIView {
         }
     }
     
-    var textPostion:TextPostion = .right{
+    var textPostion:TextPostion = .bottomRight{
         willSet{
             var xPostion = self.frame.width/1.9 // right
-            if newValue == .left{
-                xPostion = self.frame.width/4 // left
+            var yPostion = self.frame.width/1.6 // right
+
+            // set y and x postion
+            switch newValue {
+            case .bottomRight:
+                xPostion = self.frame.width/1.9
+                yPostion = self.frame.width/1.6
+            case .bottomLeft:
+                xPostion = self.frame.width/4
+                yPostion = self.frame.width/1.6
+            case .topRight:
+                xPostion = self.frame.width/1.9
+                yPostion = self.frame.width/4
+            case .topLeft:
+                xPostion = self.frame.width/4
+                yPostion = self.frame.width/4
+            case .centerRight:
+                xPostion = self.frame.width/1.6
+                yPostion = self.frame.width/2.23
+            case .centerLeft:
+                xPostion = self.frame.width/6
+                yPostion = self.frame.width/2.23
+            case .cenertTop:
+                xPostion = self.frame.width/2.23
+                yPostion = self.frame.width/1.6
+            case .centerBottom:
+                xPostion = self.frame.width/2.23
+                yPostion = self.frame.width/1.6
             }
+            
             // reposition labels
-            lblPrimaryText.frame = CGRect(x: xPostion, y: self.frame.width/1.6, width: lblPrimaryText.frame.width, height: lblPrimaryText.frame.height)
+            lblPrimaryText.frame = CGRect(x: xPostion, y: yPostion, width: lblPrimaryText.frame.width, height: lblPrimaryText.frame.height)
             lblSecondaryText.frame = CGRect(x: xPostion, y: lblPrimaryText.frame.height+lblPrimaryText.frame.origin.y+spaceBetweenLabel, width: lblSecondaryText.frame.width, height: lblSecondaryText.frame.height)
         }
     }
@@ -64,7 +91,13 @@ class MaterialTapTargetPrompt: UIView {
         self.targetView = getTargetView(object: targetView) // get the view from the sended target
         backgroundColor = UIColor.clear // make background of view clear
         layer.cornerRadius = sizeOfView // make view circly
-        self.center = CGPoint(x: self.targetView.center.x, y: self.targetView.center.y+self.targetView.frame.width/2) //center view
+        
+        var yExtraSpace:CGFloat = 0.0;
+        if targetView is UIBarButtonItem { // if the target UIBarButtonItem add space to y
+            yExtraSpace = self.targetView.frame.height/2
+        }
+        
+        self.center = CGPoint(x: self.targetView.center.x, y: self.targetView.center.y+yExtraSpace) //center view
 
         let window = UIApplication.shared.keyWindow
         window?.addSubview(self) // add to window
@@ -98,7 +131,7 @@ class MaterialTapTargetPrompt: UIView {
     
     fileprivate func addText(){
         var xPostion = self.frame.width/1.9 // right
-        if textPostion == .left{
+        if textPostion == .bottomLeft{
             xPostion = self.frame.width/4
         }
         
@@ -146,7 +179,6 @@ class MaterialTapTargetPrompt: UIView {
         self.layer.addSublayer(blurWhiteCircleLayer)
         
         addBulrFilterToWhiteCircle()
-
         playAnimationForWhiteCircle()
     }
     
@@ -266,9 +298,15 @@ class MaterialTapTargetPrompt: UIView {
     // when touch the icon run the action
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         let touch = touches.first
-        print(touch!.location(in: self));
+
+        // if button clicked invoke action
+        let isButtonClicked = shrinkedBlurWhiteCirclePath().cgPath.boundingBoxOfPath.contains(touch!.location(in: self))
+        if isButtonClicked {
+            action()
+        }
+        
         self.dismiss()
-        action()
+
     }
     
     
@@ -296,7 +334,13 @@ class MaterialTapTargetPrompt: UIView {
 }
 
 @objc enum TextPostion:Int{
-    case right
-    case left
+    case bottomRight
+    case bottomLeft
+    case topLeft
+    case topRight
+    case centerLeft
+    case centerRight
+    case cenertTop
+    case centerBottom
 }
 
