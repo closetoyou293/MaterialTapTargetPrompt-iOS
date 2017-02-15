@@ -54,12 +54,14 @@ class MaterialTapTargetPrompt: UIView {
         }
     }
     
+    // MARK: init
+    
     @objc init(controller: UIViewController,target targetView: NSObject){
-        self.sizeOfView = controller.view.frame.width * 2
-        self.controller = controller
+        self.sizeOfView = controller.view.frame.width * 2 // set size of view
+        self.controller = controller // set current view controller
         super.init(frame: CGRect(x: 0, y: 0, width: sizeOfView, height: sizeOfView))
         
-        self.targetView = getTargetView(object: targetView)
+        self.targetView = getTargetView(object: targetView) // get the view from the sended target
         backgroundColor = UIColor.clear // make background of view clear
         layer.cornerRadius = sizeOfView // make view circly
         self.center = CGPoint(x: self.targetView.center.x, y: self.targetView.center.y+self.targetView.frame.width/2) //center view
@@ -75,29 +77,23 @@ class MaterialTapTargetPrompt: UIView {
         addDummyView()
     }
     
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
     fileprivate func getTargetView(object: NSObject) -> UIView?{
         if let barButtonItem = object as? UIBarButtonItem {
-            return (barButtonItem.value(forKey: "view") as! UIView)
+            return (barButtonItem.value(forKey: "view") as! UIView) //get the view from UIBarButtonItem
         }else if let view = object as? UIView {
             return view
         }else{
             return nil
         }
     }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    fileprivate func addDummyView(){
-        dummyView = UIView(frame: CGRect(x: 0, y: 0, width: controller.view.frame.size.width, height: controller.view.frame.size.height))
-        dummyView?.backgroundColor = UIColor.clear
-        dummyView?.isUserInteractionEnabled = true
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismiss))
-        dummyView?.addGestureRecognizer(tapGesture)
-        controller.view.addSubview(dummyView!)
-        controller.view.bringSubview(toFront: self)
-    }
+
+
 
     
     fileprivate func addText(){
@@ -123,6 +119,7 @@ class MaterialTapTargetPrompt: UIView {
         self.addSubview(lblSecondaryText)
     }
 
+    // MARK: Draw circles
     
     fileprivate func drawColoredCircle(){
         
@@ -137,6 +134,34 @@ class MaterialTapTargetPrompt: UIView {
         self.playFocusAnimation()
 
     }
+
+    
+    fileprivate func drawBlurWhiteCircle(){
+        
+        blurWhiteCircleLayer.path = shrinkedBlurWhiteCirclePath().cgPath
+        blurWhiteCircleLayer.fillRule = kCAFillRuleEvenOdd
+        blurWhiteCircleLayer.fillColor = UIColor.white.cgColor
+        blurWhiteCircleLayer.opacity = 0.0
+
+        self.layer.addSublayer(blurWhiteCircleLayer)
+        
+        addBulrFilterToWhiteCircle()
+
+        playAnimationForWhiteCircle()
+    }
+    
+    func addBulrFilterToWhiteCircle(){
+        let blurFilter = CIFilter(name: "CIGaussianBlur")
+        blurFilter?.setDefaults()
+        blurFilter?.setValue(0, forKey:"inputRadius")
+        if #available(iOS 10.0, *) {
+            blurFilter?.name = "blur"
+        }
+        blurFilter?.setValue(30, forKey: "inputRadius")
+        blurWhiteCircleLayer.filters = [blurFilter!]
+    }
+    
+    // MARK: Animations
     
     fileprivate func playExpandAnimation(){
         CATransaction.begin()
@@ -157,8 +182,6 @@ class MaterialTapTargetPrompt: UIView {
     }
     
 
-    
-    
     fileprivate func playFocusAnimation(){
         let radius = targetView.frame.size.width
         let centerOfView = self.bounds.size.width / 2 - radius/2
@@ -176,30 +199,9 @@ class MaterialTapTargetPrompt: UIView {
         // if you remove it the shape will return to the original shape after the animation finished
         animation.fillMode = kCAFillRuleEvenOdd
         animation.isRemovedOnCompletion = false
-
+        
         coloredCircleLayer.add(animation, forKey: nil)
         
-    }
-    
-    fileprivate func drawBlurWhiteCircle(){
-        
-        blurWhiteCircleLayer.path = shrinkedBlurWhiteCirclePath().cgPath
-        blurWhiteCircleLayer.fillRule = kCAFillRuleEvenOdd
-        blurWhiteCircleLayer.fillColor = UIColor.white.cgColor
-        blurWhiteCircleLayer.opacity = 0.0
-
-        self.layer.addSublayer(blurWhiteCircleLayer)
-        
-        let blurFilter = CIFilter(name: "CIGaussianBlur")
-        blurFilter?.setDefaults()
-        blurFilter?.setValue(0, forKey:"inputRadius")
-        if #available(iOS 10.0, *) {
-            blurFilter?.name = "blur"
-        }
-        blurFilter?.setValue(30, forKey: "inputRadius")
-        blurWhiteCircleLayer.filters = [blurFilter!]
-
-        playAnimationForWhiteCircle()
     }
     
     fileprivate func playAnimationForWhiteCircle(){
@@ -226,7 +228,7 @@ class MaterialTapTargetPrompt: UIView {
     }
     
     
-    // size of circles
+    // MARK: Size of circles
     
     fileprivate func shrinkedBlurWhiteCirclePath() -> UIBezierPath{
         let radius = targetView.frame.size.width + 10
@@ -261,17 +263,33 @@ class MaterialTapTargetPrompt: UIView {
         return circlePath
     }
     
-    //
-    
+    // when touch the icon run the action
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        let touch = touches.first
+        print(touch!.location(in: self));
         self.dismiss()
         action()
     }
     
+    
+    // dummy view used to stop user interaction
+    fileprivate func addDummyView(){
+        dummyView = UIView(frame: CGRect(x: 0, y: 0, width: controller.view.frame.size.width, height: controller.view.frame.size.height))
+        dummyView?.backgroundColor = UIColor.clear
+        dummyView?.isUserInteractionEnabled = true
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismiss))
+        dummyView?.addGestureRecognizer(tapGesture)
+        controller.view.addSubview(dummyView!)
+        controller.view.bringSubview(toFront: self)
+    }
+    
+    // dismiss the view
     func dismiss(){
         dummyView?.removeFromSuperview()
         self.removeFromSuperview()
     }
+    
+    
 
     
 
