@@ -15,7 +15,7 @@ tapTargetPrompt.action = {
 tapTargetPrompt.circleColor = UIColor.red
 tapTargetPrompt.primaryText = "Add Home"
 tapTargetPrompt.secondaryText = "Here you can add home"
-tapTargetPrompt.textPostion = .right
+tapTargetPrompt.textPostion = .bottomRight
 ```
 
 <b>Installation</b>
