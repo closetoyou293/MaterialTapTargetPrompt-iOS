@@ -94,9 +94,9 @@ class MaterialTapTargetPrompt: UIView {
         
         let window = UIApplication.shared.keyWindow
 
-        let frame = self.targetView.convert(self.targetView.bounds, to: window)
+        let cFrame = self.targetView.convert(self.targetView.bounds, to: window)
         
-        self.center = CGPoint(x: frame.origin.x + frame.width/2 , y: frame.origin.y + frame.height/2) //center view
+        self.center = CGPoint(x: cFrame.origin.x + cFrame.width/2 , y: cFrame.origin.y + cFrame.height/2) //center view
 
         window?.addSubview(self) // add to window
         
