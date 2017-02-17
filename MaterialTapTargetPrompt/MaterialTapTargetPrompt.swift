@@ -92,14 +92,12 @@ class MaterialTapTargetPrompt: UIView {
         backgroundColor = UIColor.clear // make background of view clear
         layer.cornerRadius = sizeOfView // make view circly
         
-        var yExtraSpace:CGFloat = 0.0;
-        if targetView is UIBarButtonItem { // if the target UIBarButtonItem add space to y
-            yExtraSpace = self.targetView.frame.height/2
-        }
-        
-        self.center = CGPoint(x: self.targetView.center.x, y: self.targetView.center.y+yExtraSpace) //center view
-
         let window = UIApplication.shared.keyWindow
+
+        let frame = self.targetView.convert(self.targetView.bounds, to: window)
+        
+        self.center = CGPoint(x: frame.origin.x + frame.width/2 , y: frame.origin.y + frame.height/2) //center view
+
         window?.addSubview(self) // add to window
         
         drawColoredCircle()
@@ -343,6 +341,9 @@ class MaterialTapTargetPrompt: UIView {
     
 
 }
+
+
+
 
 @objc enum TextPostion:Int{
     case bottomRight
