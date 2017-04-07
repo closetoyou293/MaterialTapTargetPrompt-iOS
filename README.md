@@ -8,7 +8,7 @@ A iOS version of Material Tap Target Prompt ,Written in Swift and can be used in
 <b>Usage</b>
 
 ```swift
-let tapTargetPrompt = MaterialTapTargetPrompt(controller: self, target: leftBarButton)
+let tapTargetPrompt = MaterialTapTargetPrompt(target: leftBarButton)
 tapTargetPrompt.action = {
   print("left clicked")
 }
