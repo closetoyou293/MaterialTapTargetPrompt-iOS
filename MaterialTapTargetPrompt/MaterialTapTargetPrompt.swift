@@ -20,7 +20,7 @@ class MaterialTapTargetPrompt: UIView {
     var lblSecondaryText:UILabel!
     let spaceBetweenLabel:CGFloat = 10.0
     var action:(() -> Void) = {}
-    var controller:UIViewController!
+    let appWindow = UIApplication.shared.keyWindow
     
     var primaryText:String = "Primary text Here !" {
         willSet{
@@ -83,22 +83,20 @@ class MaterialTapTargetPrompt: UIView {
     
     // MARK: init
     
-    @objc init(controller: UIViewController,target targetView: NSObject){
-        self.sizeOfView = controller.view.frame.width * 2 // set size of view
-        self.controller = controller // set current view controller
+    @objc init(target targetView: NSObject){
+        self.sizeOfView = appWindow!.frame.width * 2 // set size of view
         super.init(frame: CGRect(x: 0, y: 0, width: sizeOfView, height: sizeOfView))
         
         self.targetView = getTargetView(object: targetView) // get the view from the sended target
         backgroundColor = UIColor.clear // make background of view clear
         layer.cornerRadius = sizeOfView // make view circly
         
-        let window = UIApplication.shared.keyWindow
 
-        let cFrame = self.targetView.convert(self.targetView.bounds, to: window)
+        let cFrame = self.targetView.convert(self.targetView.bounds, to: appWindow)
         
         self.center = CGPoint(x: cFrame.origin.x + cFrame.width/2 , y: cFrame.origin.y + cFrame.height/2) //center view
 
-        window?.addSubview(self) // add to window
+        appWindow?.addSubview(self) // add to window
         
         drawColoredCircle()
         drawBlurWhiteCircle()
@@ -321,13 +319,13 @@ class MaterialTapTargetPrompt: UIView {
     
     // dummy view used to stop user interaction
     fileprivate func addDummyView(){
-        dummyView = UIView(frame: CGRect(x: 0, y: 0, width: controller.view.frame.size.width, height: controller.view.frame.size.height))
+        dummyView = UIView(frame: CGRect(x: 0, y: 0, width: appWindow!.frame.size.width, height: appWindow!.frame.size.height))
         dummyView?.backgroundColor = UIColor.clear
         dummyView?.isUserInteractionEnabled = true
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismiss))
         dummyView?.addGestureRecognizer(tapGesture)
-        controller.view.addSubview(dummyView!)
-        controller.view.bringSubview(toFront: self)
+        appWindow!.addSubview(dummyView!)
+        appWindow!.bringSubview(toFront: self)
     }
     
     // dismiss the view

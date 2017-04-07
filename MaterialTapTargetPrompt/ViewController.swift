@@ -17,12 +17,13 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        
+       
     }
     
     
+    
     @IBAction func showLeftShowcase(_ sender: UIButton) {
-        let tapTargetPrompt = MaterialTapTargetPrompt(controller: self, target: leftBarButton)
+        let tapTargetPrompt = MaterialTapTargetPrompt(target: leftBarButton)
         tapTargetPrompt.action = {
             print("left clicked")
         }
@@ -33,7 +34,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func showRightShowcase(_ sender: UIButton) {
-        let tapTargetPrompt = MaterialTapTargetPrompt(controller: self, target: rightBarButton)
+        let tapTargetPrompt = MaterialTapTargetPrompt(target: rightBarButton)
         tapTargetPrompt.action = {
             print("right clicked")
         }
