@@ -27,6 +27,9 @@ class ViewController: UIViewController {
         tapTargetPrompt.action = {
             print("left clicked")
         }
+        tapTargetPrompt.dismissed = {
+            print("view dismissed")
+        }
         tapTargetPrompt.circleColor = #colorLiteral(red: 0.1568627451, green: 0.6588235294, blue: 0.8901960784, alpha: 1)
         tapTargetPrompt.primaryText = "Add Home"
         tapTargetPrompt.secondaryText = "Here you can add home"

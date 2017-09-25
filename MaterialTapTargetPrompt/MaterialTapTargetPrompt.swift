@@ -20,6 +20,7 @@ class MaterialTapTargetPrompt: UIView {
     var lblSecondaryText:UILabel!
     let spaceBetweenLabel:CGFloat = 10.0
     var action:(() -> Void) = {}
+    var dismissed:(() -> Void) = {}
     let appWindow = UIApplication.shared.keyWindow
     
     var primaryText:String = "Primary text Here !" {
@@ -310,9 +311,11 @@ class MaterialTapTargetPrompt: UIView {
         let isButtonClicked = shrinkedBlurWhiteCirclePath().cgPath.boundingBoxOfPath.contains(touch!.location(in: self))
         if isButtonClicked {
             action()
+            dismiss(isButtonClicked:true)
+            return
         }
         
-        self.dismiss()
+        dismiss(isButtonClicked:false)
 
     }
     
@@ -329,7 +332,8 @@ class MaterialTapTargetPrompt: UIView {
     }
     
     // dismiss the view
-    func dismiss(){
+    func dismiss(isButtonClicked:Bool){
+        if !isButtonClicked { dismissed() }
         dummyView?.removeFromSuperview()
         self.removeFromSuperview()
     }
