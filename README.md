@@ -12,6 +12,9 @@ let tapTargetPrompt = MaterialTapTargetPrompt(target: leftBarButton)
 tapTargetPrompt.action = {
   print("left clicked")
 }
+tapTargetPrompt.dismissed = {
+  print("view dismissed")
+}
 tapTargetPrompt.circleColor = UIColor.red
 tapTargetPrompt.primaryText = "Add Home"
 tapTargetPrompt.secondaryText = "Here you can add home"
