@@ -14,14 +14,17 @@ class MaterialTapTargetPrompt: UIView {
     fileprivate let sizeOfView:CGFloat!
     fileprivate let coloredCircleLayer = CAShapeLayer()
     fileprivate let blurWhiteCircleLayer = CAShapeLayer()
-    fileprivate var dummyView:UIView? = nil
+    fileprivate var dummyView:UIView?
+    fileprivate let appWindow = UIApplication.shared.keyWindow
     
+
     var lblPrimaryText:UILabel!
     var lblSecondaryText:UILabel!
-    let spaceBetweenLabel:CGFloat = 10.0
+    
+    var spaceBetweenLabel:CGFloat = 10.0
+    var font:UIFont?
     var action:(() -> Void) = {}
     var dismissed:(() -> Void) = {}
-    let appWindow = UIApplication.shared.keyWindow
     
     var primaryText:String = "Primary text Here !" {
         willSet{
@@ -48,32 +51,33 @@ class MaterialTapTargetPrompt: UIView {
             var xPostion:CGFloat = 0.0
             var yPostion:CGFloat = 0.0
 
+            let viewWidth = self.frame.width
             // set y and x postion
             switch newValue {
             case .bottomRight:
-                xPostion = self.frame.width/1.9
-                yPostion = self.frame.width/1.6
+                xPostion = viewWidth/1.9
+                yPostion = viewWidth/1.6
             case .bottomLeft:
-                xPostion = self.frame.width/4
-                yPostion = self.frame.width/1.6
+                xPostion = viewWidth/4
+                yPostion = viewWidth/1.6
             case .topRight:
-                xPostion = self.frame.width/1.9
-                yPostion = self.frame.width/4
+                xPostion = viewWidth/1.9
+                yPostion = viewWidth/4
             case .topLeft:
-                xPostion = self.frame.width/4
-                yPostion = self.frame.width/4
+                xPostion = viewWidth/4
+                yPostion = viewWidth/4
             case .centerRight:
-                xPostion = self.frame.width/1.6
-                yPostion = self.frame.width/2.23
+                xPostion = viewWidth/1.6
+                yPostion = viewWidth/2.23
             case .centerLeft:
-                xPostion = self.frame.width/6
-                yPostion = self.frame.width/2.23
+                xPostion = viewWidth/6
+                yPostion = viewWidth/2.23
             case .cenertTop:
-                xPostion = self.frame.width/2.23
-                yPostion = self.frame.width/1.6
+                xPostion = viewWidth/2.23
+                yPostion = viewWidth/1.6
             case .centerBottom:
-                xPostion = self.frame.width/2.23
-                yPostion = self.frame.width/1.6
+                xPostion = viewWidth/2.23
+                yPostion = viewWidth/1.6
             }
             
             // reposition labels
@@ -90,12 +94,10 @@ class MaterialTapTargetPrompt: UIView {
         
         self.targetView = getTargetView(object: targetView) // get the view from the sended target
         backgroundColor = UIColor.clear // make background of view clear
-        layer.cornerRadius = sizeOfView // make view circly
         
 
-        let cFrame = self.targetView.convert(self.targetView.bounds, to: appWindow)
-        
-        self.center = CGPoint(x: cFrame.origin.x + cFrame.width/2 , y: cFrame.origin.y + cFrame.height/2) //center view
+        let convertedFrame = self.targetView.convert(self.targetView.bounds, to: appWindow)
+        self.center = CGPoint(x: convertedFrame.origin.x + convertedFrame.width/2 , y: convertedFrame.origin.y + convertedFrame.height/2) //center view
 
         appWindow?.addSubview(self) // add to window
         
@@ -134,7 +136,7 @@ class MaterialTapTargetPrompt: UIView {
         lblPrimaryText.text = primaryText
         lblPrimaryText.numberOfLines = 3
         lblPrimaryText.textColor = UIColor.white
-        lblPrimaryText.font = UIFont.boldSystemFont(ofSize: 20)
+        lblPrimaryText.font = font ?? UIFont.boldSystemFont(ofSize: 20)
         lblPrimaryText.sizeToFit()
         self.addSubview(lblPrimaryText)
         
@@ -142,7 +144,7 @@ class MaterialTapTargetPrompt: UIView {
         lblSecondaryText.text = secondaryText
         lblSecondaryText.numberOfLines = 9
         lblSecondaryText.textColor = UIColor.white
-        lblSecondaryText.font = UIFont.systemFont(ofSize: 18)
+        lblSecondaryText.font = font ?? UIFont.systemFont(ofSize: 18)
         lblSecondaryText.sizeToFit()
         self.addSubview(lblSecondaryText)
         
@@ -163,22 +165,21 @@ class MaterialTapTargetPrompt: UIView {
     
     fileprivate func drawColoredCircle(){
         
-        coloredCircleLayer.path = shrinkedBlurWhiteCirclePath().cgPath
+        coloredCircleLayer.path = shrinkedBlurWhiteCirclePath.cgPath
         coloredCircleLayer.fillRule = kCAFillRuleEvenOdd
         coloredCircleLayer.fillColor = circleColor.cgColor
-        coloredCircleLayer.opacity = 0.8
+        coloredCircleLayer.opacity = 0.9
 
         self.layer.addSublayer(coloredCircleLayer)
         
         playExpandAnimation()
-        self.playFocusAnimation()
 
     }
 
     
     fileprivate func drawBlurWhiteCircle(){
         
-        blurWhiteCircleLayer.path = shrinkedBlurWhiteCirclePath().cgPath
+        blurWhiteCircleLayer.path = shrinkedBlurWhiteCirclePath.cgPath
         blurWhiteCircleLayer.fillRule = kCAFillRuleEvenOdd
         blurWhiteCircleLayer.fillColor = UIColor.white.cgColor
         blurWhiteCircleLayer.opacity = 0.0
@@ -205,16 +206,14 @@ class MaterialTapTargetPrompt: UIView {
     fileprivate func playExpandAnimation(){
         CATransaction.begin()
         CATransaction.setCompletionBlock({
-            self.coloredCircleLayer.path = self.coloredCircleLayerPath().cgPath
-            self.playFocusAnimation()
             self.showLabels()
         })
         let animation = CABasicAnimation(keyPath: "path")
         animation.duration = 0.8
-        animation.toValue =  coloredCircleLayerPath().cgPath
+        animation.toValue =  coloredCircleLayerPath.cgPath
         animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
         // if you remove it the shape will return to the original shape after the animation finished
-        animation.fillMode = kCAFillRuleEvenOdd
+        animation.fillMode = kCAFillModeBoth
         animation.isRemovedOnCompletion = false
         
         coloredCircleLayer.add(animation, forKey: nil)
@@ -222,34 +221,13 @@ class MaterialTapTargetPrompt: UIView {
     }
     
 
-    fileprivate func playFocusAnimation(){
-        let radius = targetView.frame.size.width
-        let centerOfView = self.bounds.size.width / 2 - radius/2
-        let path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: self.bounds.size.width, height: self.bounds.size.width), cornerRadius: self.bounds.size.width)
-        let circlePath = UIBezierPath(roundedRect: CGRect(x:centerOfView, y: centerOfView, width: radius, height:  radius), cornerRadius: radius)
-        path.append(circlePath)
-        path.usesEvenOddFillRule = true
-        
-        let animation = CABasicAnimation(keyPath: "path")
-        animation.duration = 0.8
-        animation.toValue =  path.cgPath
-        animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
-        animation.autoreverses = true
-        animation.repeatCount = HUGE
-        // if you remove it the shape will return to the original shape after the animation finished
-        animation.fillMode = kCAFillRuleEvenOdd
-        animation.isRemovedOnCompletion = false
-        
-        coloredCircleLayer.add(animation, forKey: nil)
-        
-    }
     
     fileprivate func playAnimationForWhiteCircle(){
         
         let animation = CABasicAnimation(keyPath: "path")
         animation.duration = 1.55
         animation.beginTime = CACurrentMediaTime() + 0.8
-        animation.toValue =  expandedBlurWhiteCirclePath().cgPath
+        animation.toValue =  expandedBlurWhiteCirclePath.cgPath
         animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
         animation.repeatCount = HUGE
         // if you remove it the shape will return to the original shape after the animation finished
@@ -258,7 +236,7 @@ class MaterialTapTargetPrompt: UIView {
         blurWhiteCircleLayer.add(animation, forKey: nil)
 
         let opacityanimation : CABasicAnimation = CABasicAnimation(keyPath: "opacity");
-        opacityanimation.fromValue = 0.5
+        opacityanimation.fromValue = 0.7
         opacityanimation.toValue = 0
         opacityanimation.beginTime = CACurrentMediaTime() + 0.8
         opacityanimation.repeatCount = HUGE
@@ -267,48 +245,12 @@ class MaterialTapTargetPrompt: UIView {
         
     }
     
-    
-    // MARK: Size of circles
-    
-    fileprivate func shrinkedBlurWhiteCirclePath() -> UIBezierPath{
-        let radius = targetView.frame.size.width + 10
-        let superViewWidth = targetView.frame.size.width + 11
-        let centerOfView = self.bounds.size.width / 2 - (radius/2)
-        let path = UIBezierPath(roundedRect: CGRect(x: (self.bounds.size.width/2)-(superViewWidth/2), y: (self.bounds.size.width/2)-(superViewWidth/2), width: superViewWidth, height: superViewWidth), cornerRadius: superViewWidth)
-        let circlePath = UIBezierPath(roundedRect: CGRect(x:centerOfView, y: centerOfView, width: radius, height: radius), cornerRadius: radius)
-        path.append(circlePath)
-        path.usesEvenOddFillRule = true
-        return path
-    }
-    
-    fileprivate func expandedBlurWhiteCirclePath() -> UIBezierPath{
-        let radius = targetView.frame.size.width + 15
-        let superViewWidth = self.bounds.size.width/4
-        let centerOfView = self.bounds.size.width / 2 - (radius/2)
-        let path = UIBezierPath(roundedRect: CGRect(x: (self.bounds.size.width/2)-(superViewWidth/2), y: (self.bounds.size.width/2)-(superViewWidth/2), width: superViewWidth, height: superViewWidth), cornerRadius: superViewWidth)
-        let circlePath = UIBezierPath(roundedRect: CGRect(x:centerOfView, y: centerOfView, width: radius, height: radius), cornerRadius: radius)
-        path.append(circlePath)
-        path.usesEvenOddFillRule = true
-        return path
-    }
-
-    
-    fileprivate func coloredCircleLayerPath() -> UIBezierPath{
-        let radius = targetView.frame.size.width + 10
-        let centerOfView = self.bounds.size.width / 2 - radius
-        let circlePath = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: self.bounds.size.width, height: self.bounds.size.width), cornerRadius: self.bounds.size.width)
-        let clearPath = UIBezierPath(roundedRect: CGRect(x:centerOfView, y: centerOfView, width: 2 * radius, height: 2 * radius), cornerRadius: radius)
-        circlePath.append(clearPath)
-        circlePath.usesEvenOddFillRule = true
-        return circlePath
-    }
-    
     // when touch the icon run the action
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         let touch = touches.first
 
         // if button clicked invoke action
-        let isButtonClicked = shrinkedBlurWhiteCirclePath().cgPath.boundingBoxOfPath.contains(touch!.location(in: self))
+        let isButtonClicked = shrinkedBlurWhiteCirclePath.cgPath.boundingBoxOfPath.contains(touch!.location(in: self))
         if isButtonClicked {
             action()
             dismiss(isButtonClicked:true)
@@ -337,14 +279,147 @@ class MaterialTapTargetPrompt: UIView {
         dummyView?.removeFromSuperview()
         self.removeFromSuperview()
     }
-    
-    
-
-    
 
 }
 
 
+// MARK: Size of circles (Paths)
+
+extension MaterialTapTargetPrompt{
+    
+    var smallCirclePath:UIBezierPath {
+        get{
+            let convertedFrame = self.convert(targetView.frame, from:targetView.superview)
+            return  UIBezierPath(roundedRect: convertedFrame, cornerRadius: targetMidHeight)
+        }
+    }
+    
+    var midCirclePath:UIBezierPath {
+        get{
+            var convertedFrame = convertedTargetFrame
+            convertedFrame.add(number: 100)
+            return  UIBezierPath(roundedRect: convertedFrame, cornerRadius: convertedFrame.height+100)
+        }
+    }
+    
+    var bigCirclePath:UIBezierPath {
+        get{
+            let size = self.frame.size.width
+            var convertedFrame = convertedTargetFrame
+            convertedFrame.add(number:size)
+            return  UIBezierPath(roundedRect: convertedFrame, cornerRadius: convertedFrame.height+size)
+        }
+    }
+    
+    var shrinkedBlurWhiteCirclePath:UIBezierPath{
+        get{
+            let path = smallCirclePath
+            path.append(smallCirclePath)
+            path.usesEvenOddFillRule = true
+            return path
+        }
+    }
+    
+    var expandedBlurWhiteCirclePath:UIBezierPath{
+        let path = midCirclePath
+        path.append(smallCirclePath)
+        path.usesEvenOddFillRule = true
+        return path
+    }
+    
+    
+    var coloredCircleLayerPath:UIBezierPath{
+        let path = bigCirclePath
+        path.append(smallCirclePath)
+        path.usesEvenOddFillRule = true
+        return path
+    }
+}
+
+// MARK: Dimension
+
+extension MaterialTapTargetPrompt{
+    var width:CGFloat{
+        return frame.size.width
+    }
+    
+    var height:CGFloat{
+        return frame.size.height
+    }
+    
+    var midHeight:CGFloat{
+        return frame.size.height / 2
+    }
+    
+    var midWidth:CGFloat{
+        return frame.size.width / 2
+    }
+    
+    var x:CGFloat{
+        return frame.origin.x
+    }
+    
+    var y:CGFloat{
+        return frame.origin.y
+    }
+    
+    var midX:CGFloat{
+        return frame.origin.x
+    }
+    
+    var midY:CGFloat{
+        return frame.origin.y
+    }
+    
+    
+    
+    var convertedTargetFrame: CGRect {
+         return self.convert(targetView.frame, from:targetView.superview)
+    }
+
+    var targetWidth:CGFloat{
+        return convertedTargetFrame.size.width
+    }
+    
+    var targetHeight:CGFloat{
+        return convertedTargetFrame.size.height
+    }
+    
+    var targetMidHeight:CGFloat{
+        return convertedTargetFrame.size.height / 2
+    }
+    
+    var targetMidWidth:CGFloat{
+        return convertedTargetFrame.size.width / 2
+    }
+    
+    var targetX:CGFloat{
+        return convertedTargetFrame.origin.x
+    }
+    
+    var targetY:CGFloat{
+        return convertedTargetFrame.origin.y
+    }
+    
+    var targetMidX:CGFloat{
+        return convertedTargetFrame.midX
+    }
+    
+    var targetMidY:CGFloat{
+        return convertedTargetFrame.midY
+    }
+
+}
+
+
+extension CGRect{
+    fileprivate mutating func add(number:CGFloat){
+        self.size.height += number
+        self.size.width += number
+        self.origin.x -= (number/2)
+        self.origin.y -= (number/2)
+    }
+}
 
 
 @objc enum TextPostion:Int{
