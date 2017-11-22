@@ -273,10 +273,14 @@ class MaterialTapTargetPrompt: UIView {
         appWindow!.bringSubview(toFront: self)
     }
     
+    override func removeFromSuperview() {
+        super.removeFromSuperview()
+        dummyView?.removeFromSuperview()
+    }
+    
     // dismiss the view
     func dismiss(isButtonClicked:Bool){
         if !isButtonClicked { dismissed() }
-        dummyView?.removeFromSuperview()
         self.removeFromSuperview()
     }
 
