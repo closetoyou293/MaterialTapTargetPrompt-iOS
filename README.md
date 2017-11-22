@@ -1,5 +1,9 @@
-# Material Tap Target Prompt - iOS
+<p align="center">
+ <img src="https://github.com/Abedalkareem/MaterialTapTargetPrompt-iOS/blob/master/material_tap_target_logo.png"  >
+</p>
 A iOS version of Material Tap Target Prompt ,Written in Swift and can be used in swift or objective c projects.
+
+</br>
 
 <b>ScreenShots</b>
 
@@ -35,7 +39,7 @@ I'm going to be very happy if you give me a feedback or advice , thank you
 ```
 The MIT License (MIT)
 
-Copyright (c) 2017 Abedalkareem
+Copyright (c) 2017 Abedalkareem Omreyh
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
