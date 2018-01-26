@@ -14,6 +14,7 @@
 		C666633D1E37294F0091E32F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C666633B1E37294F0091E32F /* LaunchScreen.storyboard */; };
 		C66663451E3729BF0091E32F /* MaterialTapTargetPrompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66663441E3729BF0091E32F /* MaterialTapTargetPrompt.swift */; };
 		C6AC85801E37781000AB6960 /* screenshot.png in Resources */ = {isa = PBXBuildFile; fileRef = C6AC857F1E37781000AB6960 /* screenshot.png */; };
+		C6E0F85F201AF81A00F22784 /* NextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E0F85E201AF81A00F22784 /* NextViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		C666633E1E37294F0091E32F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C66663441E3729BF0091E32F /* MaterialTapTargetPrompt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MaterialTapTargetPrompt.swift; sourceTree = "<group>"; };
 		C6AC857F1E37781000AB6960 /* screenshot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = screenshot.png; sourceTree = "<group>"; };
+		C6E0F85E201AF81A00F22784 /* NextViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +62,7 @@
 			children = (
 				C66663321E37294F0091E32F /* AppDelegate.swift */,
 				C66663341E37294F0091E32F /* ViewController.swift */,
+				C6E0F85E201AF81A00F22784 /* NextViewController.swift */,
 				C66663441E3729BF0091E32F /* MaterialTapTargetPrompt.swift */,
 				C66663361E37294F0091E32F /* Main.storyboard */,
 				C66663391E37294F0091E32F /* Assets.xcassets */,
@@ -103,6 +106,7 @@
 					C666632E1E37294F0091E32F = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = P86FRML4RH;
+						LastSwiftMigration = 0920;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -145,6 +149,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C66663351E37294F0091E32F /* ViewController.swift in Sources */,
+				C6E0F85F201AF81A00F22784 /* NextViewController.swift in Sources */,
 				C66663451E3729BF0091E32F /* MaterialTapTargetPrompt.swift in Sources */,
 				C66663331E37294F0091E32F /* AppDelegate.swift in Sources */,
 			);
@@ -275,7 +280,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.jostudio.MaterialTapTargetPrompt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -289,7 +295,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.jostudio.MaterialTapTargetPrompt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};

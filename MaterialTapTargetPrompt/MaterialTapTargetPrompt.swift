@@ -4,52 +4,66 @@
 //
 //  Created by abedalkareem omreyh on 1/24/17.
 //  Copyright © 2017 abedalkareem omreyh. All rights reserved.
+//  GitHub : https://github.com/Abedalkareem/MaterialTapTargetPrompt-iOS
 //
 
 import UIKit
 
 class MaterialTapTargetPrompt: UIView {
 
-    fileprivate var targetView:UIView!
-    fileprivate let sizeOfView:CGFloat!
-    fileprivate let coloredCircleLayer = CAShapeLayer()
-    fileprivate let blurWhiteCircleLayer = CAShapeLayer()
-    fileprivate var dummyView:UIView?
-    fileprivate let appWindow = UIApplication.shared.keyWindow
+    // MARK: Private properties
+    fileprivate var targetView: UIView!
+    private let coloredCircleLayer = CAShapeLayer()
+    private let blurWhiteCircleLayer = CAShapeLayer()
     
+    fileprivate var type: Type!
+    private let sizeOfView: CGFloat!
+    private var spaceBetweenLabel: CGFloat = 10.0
 
-    var lblPrimaryText:UILabel!
-    var lblSecondaryText:UILabel!
+    private var primaryTextLabel: UILabel!
+    private var secondaryTextLabel: UILabel!
+    private var dummyView: UIView?
+    private let appWindow = UIApplication.shared.keyWindow
+
+    // MARK: Public properties
+    /// The primary label font
+    var primaryFont: UIFont?
+    /// The secondary label font
+    var secondaryFont: UIFont?
+
+    /// The action will run when the target clicked.
+    var action: (() -> Void) = {}
+    /// The action will run when out of the target clicked.
+    var dismissed: (() -> Void) = {}
     
-    var spaceBetweenLabel:CGFloat = 10.0
-    var font:UIFont?
-    var action:(() -> Void) = {}
-    var dismissed:(() -> Void) = {}
-    
-    var primaryText:String = "Primary text Here !" {
+    /// The primary text.
+    var primaryText: String = "Primary text Here !" {
         willSet{
-            lblPrimaryText.text = newValue
-            lblPrimaryText.sizeToFit()
+            primaryTextLabel.text = newValue
+            primaryTextLabel.sizeToFit()
         }
     }
     
-    var secondaryText:String = "Secondary text Here !" {
+    /// The secondary text.
+    var secondaryText: String = "Secondary text Here !" {
         willSet{
-            lblSecondaryText.text = newValue
-            lblSecondaryText.sizeToFit()
+            secondaryTextLabel.text = newValue
+            secondaryTextLabel.sizeToFit()
         }
     }
     
-    var circleColor:UIColor! = UIColor.brown {
+    /// The circel color. `.blue` by default.
+    var circleColor: UIColor! = UIColor.blue {
         willSet{
             coloredCircleLayer.fillColor = newValue.cgColor
         }
     }
     
-    var textPostion:TextPostion = .bottomRight{
-        willSet{
-            var xPostion:CGFloat = 0.0
-            var yPostion:CGFloat = 0.0
+    /// The text postion arownd the view. `.bottomRight` by default
+    var textPostion: TextPostion = .bottomRight {
+        willSet {
+            var xPostion: CGFloat = 0.0
+            var yPostion: CGFloat = 0.0
 
             let viewWidth = self.frame.width
             // set y and x postion
@@ -81,16 +95,24 @@ class MaterialTapTargetPrompt: UIView {
             }
             
             // reposition labels
-            lblPrimaryText.frame = CGRect(x: xPostion, y: yPostion, width: lblPrimaryText.frame.width, height: lblPrimaryText.frame.height)
-            lblSecondaryText.frame = CGRect(x: xPostion, y: lblPrimaryText.frame.height+lblPrimaryText.frame.origin.y+spaceBetweenLabel, width: lblSecondaryText.frame.width, height: lblSecondaryText.frame.height)
+            primaryTextLabel.frame = CGRect(x: xPostion, y: yPostion, width: primaryTextLabel.frame.width, height: primaryTextLabel.frame.height)
+            secondaryTextLabel.frame = CGRect(x: xPostion, y: primaryTextLabel.frame.height+primaryTextLabel.frame.origin.y+spaceBetweenLabel, width: secondaryTextLabel.frame.width, height: secondaryTextLabel.frame.height)
         }
     }
     
     // MARK: init
     
-    @objc init(target targetView: NSObject){
+    ///
+    /// Creates an instance with the target view and the type of shape of the view.
+    ///
+    /// -parameter target: The view that you want to show the prompt around.
+    /// -parameter type: Type of shape of the view, `.circle` by default.
+    ///
+    /// -returns: new MaterialTapTargetPrompt instance.
+    @objc init(target targetView: NSObject, type: Type = .circle) {
         self.sizeOfView = appWindow!.frame.width * 2 // set size of view
         super.init(frame: CGRect(x: 0, y: 0, width: sizeOfView, height: sizeOfView))
+        self.type = type
         
         self.targetView = getTargetView(object: targetView) // get the view from the sended target
         backgroundColor = UIColor.clear // make background of view clear
@@ -115,55 +137,55 @@ class MaterialTapTargetPrompt: UIView {
     }
     
     
-    fileprivate func getTargetView(object: NSObject) -> UIView?{
+    private func getTargetView(object: NSObject) -> UIView? {
         if let barButtonItem = object as? UIBarButtonItem {
             return (barButtonItem.value(forKey: "view") as! UIView) //get the view from UIBarButtonItem
-        }else if let view = object as? UIView {
+        } else if let view = object as? UIView {
             return view
-        }else{
+        } else {
             return nil
         }
     }
 
 
-    fileprivate func addText(){
+    private func addText() {
         var xPostion = self.frame.width/1.9 // right
-        if textPostion == .bottomLeft{
+        if textPostion == .bottomLeft {
             xPostion = self.frame.width/4
         }
         
-        lblPrimaryText = UILabel(frame: CGRect(x: xPostion, y: self.frame.width/1.6, width: self.frame.width*3, height: 5))
-        lblPrimaryText.text = primaryText
-        lblPrimaryText.numberOfLines = 3
-        lblPrimaryText.textColor = UIColor.white
-        lblPrimaryText.font = font ?? UIFont.boldSystemFont(ofSize: 20)
-        lblPrimaryText.sizeToFit()
-        self.addSubview(lblPrimaryText)
+        primaryTextLabel = UILabel(frame: CGRect(x: xPostion, y: self.frame.width/1.6, width: self.frame.width*3, height: 5))
+        primaryTextLabel.text = primaryText
+        primaryTextLabel.numberOfLines = 3
+        primaryTextLabel.textColor = UIColor.white
+        primaryTextLabel.font = primaryFont ?? UIFont.boldSystemFont(ofSize: 20)
+        primaryTextLabel.sizeToFit()
+        self.addSubview(primaryTextLabel)
         
-        lblSecondaryText = UILabel(frame: CGRect(x: xPostion, y: lblPrimaryText.frame.height+lblPrimaryText.frame.origin.y+spaceBetweenLabel, width: self.frame.width*3, height: 5))
-        lblSecondaryText.text = secondaryText
-        lblSecondaryText.numberOfLines = 9
-        lblSecondaryText.textColor = UIColor.white
-        lblSecondaryText.font = font ?? UIFont.systemFont(ofSize: 18)
-        lblSecondaryText.sizeToFit()
-        self.addSubview(lblSecondaryText)
+        secondaryTextLabel = UILabel(frame: CGRect(x: xPostion, y: primaryTextLabel.frame.height+primaryTextLabel.frame.origin.y+spaceBetweenLabel, width: self.frame.width*3, height: 5))
+        secondaryTextLabel.text = secondaryText
+        secondaryTextLabel.numberOfLines = 9
+        secondaryTextLabel.textColor = UIColor.white
+        secondaryTextLabel.font = secondaryFont ?? UIFont.systemFont(ofSize: 18)
+        secondaryTextLabel.sizeToFit()
+        self.addSubview(secondaryTextLabel)
         
         // hide labels
-        lblPrimaryText.alpha = 0
-        lblSecondaryText.alpha = 0
+        primaryTextLabel.alpha = 0
+        secondaryTextLabel.alpha = 0
 
     }
     
-    fileprivate func showLabels(){
+    private func showLabels() {
         UIView.animate(withDuration: 0.5) {
-            self.lblPrimaryText.alpha = 1
-            self.lblSecondaryText.alpha = 1
+            self.primaryTextLabel.alpha = 1
+            self.secondaryTextLabel.alpha = 1
         }
     }
 
     // MARK: Draw circles
     
-    fileprivate func drawColoredCircle(){
+    private func drawColoredCircle() {
         
         coloredCircleLayer.path = shrinkedBlurWhiteCirclePath.cgPath
         coloredCircleLayer.fillRule = kCAFillRuleEvenOdd
@@ -177,7 +199,7 @@ class MaterialTapTargetPrompt: UIView {
     }
 
     
-    fileprivate func drawBlurWhiteCircle(){
+    private func drawBlurWhiteCircle() {
         
         blurWhiteCircleLayer.path = shrinkedBlurWhiteCirclePath.cgPath
         blurWhiteCircleLayer.fillRule = kCAFillRuleEvenOdd
@@ -190,10 +212,10 @@ class MaterialTapTargetPrompt: UIView {
         playAnimationForWhiteCircle()
     }
     
-    func addBulrFilterToWhiteCircle(){
+    private func addBulrFilterToWhiteCircle() {
         let blurFilter = CIFilter(name: "CIGaussianBlur")
         blurFilter?.setDefaults()
-        blurFilter?.setValue(0, forKey:"inputRadius")
+        blurFilter?.setValue(0, forKey: "inputRadius")
         if #available(iOS 10.0, *) {
             blurFilter?.name = "blur"
         }
@@ -203,7 +225,7 @@ class MaterialTapTargetPrompt: UIView {
     
     // MARK: Animations
     
-    fileprivate func playExpandAnimation(){
+    private func playExpandAnimation() {
         CATransaction.begin()
         CATransaction.setCompletionBlock({
             self.showLabels()
@@ -222,7 +244,7 @@ class MaterialTapTargetPrompt: UIView {
     
 
     
-    fileprivate func playAnimationForWhiteCircle(){
+    private func playAnimationForWhiteCircle() {
         
         let animation = CABasicAnimation(keyPath: "path")
         animation.duration = 1.55
@@ -235,7 +257,7 @@ class MaterialTapTargetPrompt: UIView {
         animation.isRemovedOnCompletion = false
         blurWhiteCircleLayer.add(animation, forKey: nil)
 
-        let opacityanimation : CABasicAnimation = CABasicAnimation(keyPath: "opacity");
+        let opacityanimation: CABasicAnimation = CABasicAnimation(keyPath: "opacity");
         opacityanimation.fromValue = 0.7
         opacityanimation.toValue = 0
         opacityanimation.beginTime = CACurrentMediaTime() + 0.8
@@ -263,7 +285,7 @@ class MaterialTapTargetPrompt: UIView {
     
     
     // dummy view used to stop user interaction
-    fileprivate func addDummyView(){
+    private func addDummyView() {
         dummyView = UIView(frame: CGRect(x: 0, y: 0, width: appWindow!.frame.size.width, height: appWindow!.frame.size.height))
         dummyView?.backgroundColor = UIColor.clear
         dummyView?.isUserInteractionEnabled = true
@@ -279,7 +301,7 @@ class MaterialTapTargetPrompt: UIView {
     }
     
     // dismiss the view
-    func dismiss(isButtonClicked:Bool){
+    @objc private func dismiss(isButtonClicked:Bool) {
         if !isButtonClicked { dismissed() }
         self.removeFromSuperview()
     }
@@ -291,32 +313,32 @@ class MaterialTapTargetPrompt: UIView {
 
 extension MaterialTapTargetPrompt{
     
-    var smallCirclePath:UIBezierPath {
-        get{
+    private var smallCirclePath: UIBezierPath {
+        get {
             let convertedFrame = self.convert(targetView.frame, from:targetView.superview)
-            return  UIBezierPath(roundedRect: convertedFrame, cornerRadius: targetMidHeight)
+            return  UIBezierPath(roundedRect: convertedFrame, cornerRadius: type == .circle ?  targetMidHeight : 0)
         }
     }
     
-    var midCirclePath:UIBezierPath {
-        get{
+    private var midCirclePath: UIBezierPath {
+        get {
             var convertedFrame = convertedTargetFrame
             convertedFrame.add(number: 100)
-            return  UIBezierPath(roundedRect: convertedFrame, cornerRadius: convertedFrame.height+100)
+            return  UIBezierPath(roundedRect: convertedFrame, cornerRadius: type == .circle ? convertedFrame.height+100 : 0)
         }
     }
     
-    var bigCirclePath:UIBezierPath {
-        get{
+    private var bigCirclePath: UIBezierPath {
+        get {
             let size = self.frame.size.width
             var convertedFrame = convertedTargetFrame
             convertedFrame.add(number:size)
-            return  UIBezierPath(roundedRect: convertedFrame, cornerRadius: convertedFrame.height+size)
+            return  UIBezierPath(roundedRect: convertedFrame, cornerRadius: type == .circle ? convertedFrame.height+size : 0)
         }
     }
     
-    var shrinkedBlurWhiteCirclePath:UIBezierPath{
-        get{
+    private var shrinkedBlurWhiteCirclePath: UIBezierPath {
+        get {
             let path = smallCirclePath
             path.append(smallCirclePath)
             path.usesEvenOddFillRule = true
@@ -324,7 +346,7 @@ extension MaterialTapTargetPrompt{
         }
     }
     
-    var expandedBlurWhiteCirclePath:UIBezierPath{
+    private var expandedBlurWhiteCirclePath: UIBezierPath {
         let path = midCirclePath
         path.append(smallCirclePath)
         path.usesEvenOddFillRule = true
@@ -332,7 +354,7 @@ extension MaterialTapTargetPrompt{
     }
     
     
-    var coloredCircleLayerPath:UIBezierPath{
+    private var coloredCircleLayerPath: UIBezierPath {
         let path = bigCirclePath
         path.append(smallCirclePath)
         path.usesEvenOddFillRule = true
@@ -342,82 +364,82 @@ extension MaterialTapTargetPrompt{
 
 // MARK: Dimension
 
-extension MaterialTapTargetPrompt{
-    var width:CGFloat{
+extension MaterialTapTargetPrompt {
+    private var width: CGFloat {
         return frame.size.width
     }
     
-    var height:CGFloat{
+    private var height: CGFloat {
         return frame.size.height
     }
     
-    var midHeight:CGFloat{
+    private var midHeight: CGFloat {
         return frame.size.height / 2
     }
     
-    var midWidth:CGFloat{
+    private var midWidth: CGFloat {
         return frame.size.width / 2
     }
     
-    var x:CGFloat{
+    private var x: CGFloat {
         return frame.origin.x
     }
     
-    var y:CGFloat{
+    private var y: CGFloat {
         return frame.origin.y
     }
     
-    var midX:CGFloat{
+    private var midX: CGFloat {
         return frame.origin.x
     }
     
-    var midY:CGFloat{
+    private var midY: CGFloat {
         return frame.origin.y
     }
     
     
     
-    var convertedTargetFrame: CGRect {
+    private var convertedTargetFrame: CGRect {
          return self.convert(targetView.frame, from:targetView.superview)
     }
 
-    var targetWidth:CGFloat{
+   private  var targetWidth: CGFloat {
         return convertedTargetFrame.size.width
     }
     
-    var targetHeight:CGFloat{
+    private var targetHeight: CGFloat {
         return convertedTargetFrame.size.height
     }
     
-    var targetMidHeight:CGFloat{
+    private var targetMidHeight: CGFloat {
         return convertedTargetFrame.size.height / 2
     }
     
-    var targetMidWidth:CGFloat{
+    private var targetMidWidth: CGFloat {
         return convertedTargetFrame.size.width / 2
     }
     
-    var targetX:CGFloat{
+    private var targetX: CGFloat {
         return convertedTargetFrame.origin.x
     }
     
-    var targetY:CGFloat{
+    private var targetY: CGFloat {
         return convertedTargetFrame.origin.y
     }
     
-    var targetMidX:CGFloat{
+    private var targetMidX: CGFloat {
         return convertedTargetFrame.midX
     }
     
-    var targetMidY:CGFloat{
+    private var targetMidY: CGFloat {
         return convertedTargetFrame.midY
     }
 
 }
 
 
-extension CGRect{
-    fileprivate mutating func add(number:CGFloat){
+extension CGRect {
+    fileprivate mutating func add(number: CGFloat) {
         self.size.height += number
         self.size.width += number
         self.origin.x -= (number/2)
@@ -426,7 +448,7 @@ extension CGRect{
 }
 
 
-@objc enum TextPostion:Int{
+@objc enum TextPostion: Int {
     case bottomRight
     case bottomLeft
     case topLeft
@@ -436,4 +458,13 @@ extension CGRect{
     case cenertTop
     case centerBottom
 }
+
+
+@objc enum Type: Int {
+    case circle
+    case rectangle
+    case square
+}
+
+
 
