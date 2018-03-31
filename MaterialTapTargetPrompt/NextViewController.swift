@@ -19,18 +19,13 @@ class NextViewController: UIViewController {
 
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        showForBack()
+    }
+    
     @IBAction func showForBackButton(_ sender: UIButton) {
-        let tapTargetPrompt = MaterialTapTargetPrompt(target: backButton)
-        tapTargetPrompt.action = {
-            print("back clicked")
-        }
-        tapTargetPrompt.dismissed = {
-            print("view dismissed")
-        }
-        tapTargetPrompt.circleColor = #colorLiteral(red: 0.1568627451, green: 0.6588235294, blue: 0.8901960784, alpha: 1)
-        tapTargetPrompt.primaryText = "BACK !"
-        tapTargetPrompt.secondaryText = "if you clicked here, you will go back to previous screen"
-        tapTargetPrompt.textPostion = .topRight
+        showForBack()
     }
     
     @IBAction func showForCenterButton(_ sender: UIButton) {
@@ -42,6 +37,20 @@ class NextViewController: UIViewController {
         tapTargetPrompt.primaryText = "Center Button"
         tapTargetPrompt.secondaryText = "This button show a bad things"
         tapTargetPrompt.textPostion = .centerBottom
+    }
+    
+    func showForBack() {
+        let tapTargetPrompt = MaterialTapTargetPrompt(target: backButton)
+        tapTargetPrompt.action = {
+            print("back clicked")
+        }
+        tapTargetPrompt.dismissed = {
+            print("view dismissed")
+        }
+        tapTargetPrompt.circleColor = #colorLiteral(red: 0.1568627451, green: 0.6588235294, blue: 0.8901960784, alpha: 1)
+        tapTargetPrompt.primaryText = "BACK !"
+        tapTargetPrompt.secondaryText = "if you clicked here, you will go back to previous screen"
+        tapTargetPrompt.textPostion = .topRight
     }
     
     @IBAction func back(_ sender: Any) {
